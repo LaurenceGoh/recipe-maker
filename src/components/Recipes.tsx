@@ -1,9 +1,11 @@
 import React from "react";
 import { Suspense } from "react";
-import RecipeCard from "./RecipeCard";
-import RecipeData from "./RecipeCard";
+import RecipeCard , { RecipeData } from "./RecipeCard";
+import { SimpleGrid } from "@chakra-ui/react";
 
-const Recipes = async () => {
+
+
+const Recipes : React.FC = async () => {
   const getAllRecipes = async () =>
     fetch("https://dummyjson.com/recipes")
       .then((res) => res.json())
@@ -17,16 +19,18 @@ const Recipes = async () => {
     );
   };
 
-  const recipes = await getAllRecipes();
+  const recipes : RecipeData[] = await getAllRecipes();
 
-  console.log(recipes);
 
   return (
     <div>
       <Suspense fallback={<div>Loading...</div>}>
-        {recipes.map((recipe: typeof RecipeData, index: number) => (
-          <div>Name : {recipe.name}</div>
+        <SimpleGrid columns={3} spacing={10}>
+        {recipes.map((recipe : RecipeData , index: number) => (
+          <RecipeCard recipe={recipe} key={index}/>
         ))}
+        </SimpleGrid>
+       
       </Suspense>
     </div>
   );

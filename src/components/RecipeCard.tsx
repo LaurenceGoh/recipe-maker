@@ -1,3 +1,4 @@
+"use client";
 import {
   Button,
   ButtonGroup,
@@ -8,11 +9,25 @@ import {
   Heading,
   Stack,
   Text,
+  ListItem,
+  OrderedList,
+  Tag,
+  SimpleGrid,
+  Center,
+  useDisclosure,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
 } from "@chakra-ui/react";
 import React from "react";
 import { Image } from "@chakra-ui/react";
 
 export interface RecipeData {
+  key: number;
   id: number;
   name: string;
   ingredients: string[];
@@ -30,37 +45,84 @@ export interface RecipeData {
   reviewCount: number;
   mealType: string[];
 }
+interface RecipeProps {
+  recipe: RecipeData;
+}
 
-const RecipeCard = () => {
+const RecipeCard: React.FC<RecipeProps> = ({ recipe }) => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const {
+    key,
+    id,
+    name,
+    ingredients,
+    instructions,
+    prepTimeMinutes,
+    cookTimeMinutes,
+    servings,
+    difficulty,
+    cuisine,
+    caloriesPerServing,
+    tags,
+    userId,
+    image,
+    rating,
+    reviewCount,
+    mealType,
+  } = recipe;
   return (
-    <Card maxW="sm">
+    <Card maxW="lg">
       <CardBody>
-        <Image
-          src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80"
-          alt="Green double couch with wooden legs"
-          borderRadius="lg"
-        />
+        <Image src={image} alt={name} borderRadius="lg" />
         <Stack mt="6" spacing="3">
-          <Heading size="md">Living room Sofa</Heading>
-          <Text>
-            This sofa is perfect for modern tropical spaces, baroque inspired
-            spaces, earthy toned spaces and for people who love a chic design
-            with a sprinkle of vintage design.
+          <Heading size="lg">{name}</Heading>
+          <Text color="blue.600" fontSize="lg">
+            Ingredients required :
           </Text>
-          <Text color="blue.600" fontSize="2xl">
-            $450
-          </Text>
+          <OrderedList>
+            {ingredients.map((ingredient: string, index: number) => (
+              <ListItem key={index}>{ingredient}</ListItem>
+            ))}
+          </OrderedList>
+
+          <Text size="md" mt={5}>Tags</Text>
+
+          <SimpleGrid columns={2} spacing={10} >
+            {tags.map((tag: string, index: number) => (
+              <Tag key={index} size="lg" justifyContent="center">
+                {tag}
+              </Tag>
+            ))}
+          </SimpleGrid>
         </Stack>
       </CardBody>
       <Divider />
       <CardFooter>
         <ButtonGroup spacing="2">
-          <Button variant="solid" colorScheme="blue">
-            Buy now
+          <Button variant="solid" colorScheme="blue" onClick={onOpen}>
+            Instructions
           </Button>
-          <Button variant="ghost" colorScheme="blue">
-            Add to cart
-          </Button>
+
+          <Modal isOpen={isOpen} onClose={onClose}>
+            <ModalOverlay />
+            <ModalContent>
+              <ModalHeader>How to cook {name}</ModalHeader>
+              <ModalCloseButton />
+              <ModalBody>
+                <OrderedList>
+                  {instructions.map((instruction: string, index: number) => (
+                    <ListItem key={index}>{instruction}</ListItem>
+                  ))}
+                </OrderedList>
+              </ModalBody>
+
+              <ModalFooter>
+                <Button colorScheme="blue" mr={3} onClick={onClose}>
+                  Close
+                </Button>
+              </ModalFooter>
+            </ModalContent>
+          </Modal>
         </ButtonGroup>
       </CardFooter>
     </Card>
