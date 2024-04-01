@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { Suspense } from "react";
 import RecipeCard, { RecipeData } from "./RecipeCard";
-import { FormControl, Input, SimpleGrid } from "@chakra-ui/react";
+import { SimpleGrid, Text } from "@chakra-ui/react";
 import Search from "./Search";
 
 const getAllRecipes = async () =>
@@ -12,14 +12,9 @@ const getAllRecipes = async () =>
       return data.recipes;
     });
 
-
-
-const Recipes : React.FC = () => {
-
-
+const Recipes: React.FC = () => {
   const [recipes, setRecipes] = useState<RecipeData[]>([]);
   const [filteredRecipes, setFilteredRecipes] = useState<RecipeData[]>([]);
-  
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const input = e.target.value;
@@ -33,9 +28,9 @@ const Recipes : React.FC = () => {
       try {
         const fetchedRecipes = await getAllRecipes();
         setRecipes(fetchedRecipes);
-        setFilteredRecipes(fetchedRecipes); 
+        setFilteredRecipes(fetchedRecipes);
       } catch (error) {
-        console.error('Error fetching recipes:', error);
+        console.error("Error fetching recipes:", error);
       }
     };
 
@@ -43,14 +38,20 @@ const Recipes : React.FC = () => {
   }, []);
   return (
     <>
-      <Search handleChange={handleChange}/>
+      <Search handleChange={handleChange} />
 
       <Suspense fallback={<div>Loading...</div>}>
-        <SimpleGrid columns={3} spacing={10}>
-          {filteredRecipes.map((recipe: RecipeData, index: number) => (
-            <RecipeCard recipe={recipe} key={index} />
-          ))}
-        </SimpleGrid>
+        {filteredRecipes.length > 0 ? (
+          <>
+            <SimpleGrid columns={3} spacing={10}>
+              {filteredRecipes.map((recipe: RecipeData, index: number) => (
+                <RecipeCard recipe={recipe} key={index} />
+              ))}
+            </SimpleGrid>
+          </>
+        ) : (
+          <Text as='b' display='flex' textAlign='center'>No Recipes Found.</Text>
+        )}
       </Suspense>
     </>
   );

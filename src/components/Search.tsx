@@ -1,11 +1,9 @@
-
 import React from "react";
 
 import {
   FormControl,
   Input,
 } from "@chakra-ui/react";
-
 
 interface SearchProps {
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
